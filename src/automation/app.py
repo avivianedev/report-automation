@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import time, date
 import dotenv
 import keyring
 from selenium import webdriver
@@ -15,24 +15,34 @@ from pathlib import Path
 load_dotenv(Path(__file__).resolve().parents[2] / ".env") 
 
 
-URL = os.getenv('URL')
+
 USERNAME = os.getenv('USER')
 SERVICE = os.getenv('SERVICE')
 pwd = keyring.get_password(SERVICE, USERNAME)
+data = date.today()
 
-def get_driver():
-    driver = webdriver.Firefox()
-    try:      
-        if not URL:
-            raise RuntimeError("Variável de ambiente URL não definida.") 
+def get_driver():    
+    URL = os.getenv('URL')
+         
+    if not URL:
+        raise RuntimeError("Variável de ambiente URL não definida.") 
         
-        driver.implicitly_wait(5) 
-        driver.get(URL)
-        return driver
-    except Exception as e:
-        print(f"Falha ao conectar ao driver. Erro: {e}")   
-        driver.quit()     
-        return None            
+    lista_urls = URL.split(',')    
+
+    for url in lista_urls:
+        url = url.strip() # Remove espaços extras
+        driver = webdriver.Firefox()
+        driver.implicitly_wait(2)
+        try:     
+            print(f"Tentando conexão com: {url}")
+            driver.get(url)
+            return driver
+        
+        except Exception as e:
+            print(f"Falha ao conectar ao driver. Erro: {e}")   
+            driver.quit()   
+            continue  
+    return None            
         
 
 def authentication(driver):
@@ -52,6 +62,7 @@ def authentication(driver):
 
 def select_report(driver, options):    
     wait = WebDriverWait(driver, 10)
+    
     try:
         old_rel = driver.find_element(By.ID, "CPH_ddl_tipos")
         Select(driver.find_element(By.ID, "CPH_ddl_tipos")).select_by_index(options[0])

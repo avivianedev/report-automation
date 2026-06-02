@@ -4,13 +4,11 @@ from src.automation.io.file_ops import move_file
 from src.automation.app import authentication, get_driver,run_report
 from src.automation.config import REPORTS
 
-#sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(str(Path(__file__).resolve().parent / "src"))
-
 
 if __name__ == "__main__":   
     
-    for key in ['A6', 'C6']:
+    for key in ['C6']:
         driver = get_driver()  
         authentication(driver)
         config = REPORTS[key]
@@ -25,5 +23,5 @@ if __name__ == "__main__":
                     print(f'Falha ao mover arquivo. Erro: {e}')          
         except Exception as e:
             print(f'Falha no relatório {key}')                
-        finally:
+        finally:            
             driver.quit() 

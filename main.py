@@ -4,11 +4,15 @@ from pathlib import Path
 from src.automation.io.file_ops import move_file
 from src.automation.config.config import REPORTS
 from src.automation.engines.verisys_selenium import VerisysSeleniumEngine
+from src.automation.engines.robbu_playwright import RobbuPlaywrightEngine
+ 
 
 sys.path.append(str(Path(__file__).resolve().parent / "src"))
 
 ENGINES_MAP = {
     'C6': VerisysSeleniumEngine,
+    'ROBBU_WHATSAPP': RobbuPlaywrightEngine
+    
 }
 
 
@@ -37,6 +41,6 @@ def execute_automation(report_key: str):
         
     
 if __name__ == "__main__": 
-    execute_automation('C6')
+    execute_automation('ROBBU_WHATSAPP')
     
     

@@ -13,5 +13,10 @@ REPORTS = {
         "src"  : r"C:\Users\Vivianea\Downloads\Chamada_GrupoDac.xlsx",
         "dst" : r"C:\Users\Vivianea\OneDrive - INFOGLOBO\DASHBOARD\Telefonia\2026\C6"
         
+    },
+    "ROBBU_WHATSAPP" : {        
+        "dst_path" : r"C:\Users\Vivianea\OneDrive - INFOGLOBO\DASHBOARD\Robbu",
+        "final_filename": "analitico_whatsapp.csv"
     }
+
 }

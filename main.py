@@ -2,7 +2,7 @@ import sys, os
 from pathlib import Path
 from src.automation.io.file_ops import move_file
 from src.automation.app import authentication, get_driver,run_report
-from src.automation.config import REPORTS
+from src.automation.config.config import REPORTS
 
 sys.path.append(str(Path(__file__).resolve().parent / "src"))
 

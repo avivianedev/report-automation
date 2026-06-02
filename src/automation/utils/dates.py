@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 
-def generate_formated_date(date, format):
+def generate_formatted_date(date, format):
     return date.strftime(format)
 
 

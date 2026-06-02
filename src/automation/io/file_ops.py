@@ -4,7 +4,7 @@ from pathlib import Path
 import shutil
 import time
 
-from src.automation.utils.dates import generate_formated_date
+from src.automation.utils.dates import generate_formatted_date
 
 sys.path.append(str(Path(__file__).resolve().parents[2])) 
 

@@ -22,6 +22,9 @@ Thumbs.db
 
 # Logs
 *.log
+.logs
+automation.log
+logs/*.log
 
 # Arquivos temporários
 *.tmp

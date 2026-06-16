@@ -13,11 +13,13 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 from src.automation.core.base_engine import BaseAutomationEngine
+from src.automation.utils.logger import get_logger
 
 root = Path(__file__).resolve().parents[3]
 load_dotenv(root / ".env")
 
 data = date.today()
+logger = get_logger('verisys')
 
 class VerisysSeleniumEngine(BaseAutomationEngine):
     def __init__(self):     
@@ -32,7 +34,9 @@ class VerisysSeleniumEngine(BaseAutomationEngine):
         URL = os.getenv('URL')
             
         if not URL:
+            logger.error("Variável de ambiente URL não definida.")
             raise RuntimeError("Variável de ambiente URL não definida.") 
+            
             
         lista_urls = URL.split(',')    
 
@@ -41,12 +45,13 @@ class VerisysSeleniumEngine(BaseAutomationEngine):
             self.driver = webdriver.Firefox()
             self.driver.implicitly_wait(2)
             try:     
-                print(f"Tentando conexão com: {url}")
+                logger.info(f"Tentando conexão com: {url}")
                 self.driver.get(url)
+                logger.info(f'Conexão realizada com: {url}')
                 return self.driver
             
             except Exception as e:
-                print(f"Falha ao conectar ao driver. Erro: {e}")   
+                logger.exception(f"Falha ao conectar ao driver. Erro: {e}")   
                 self.driver.quit()   
                 continue  
         return None       
@@ -66,13 +71,13 @@ class VerisysSeleniumEngine(BaseAutomationEngine):
             login_button.click()
 
         except Exception as e:
-            print('Falha na autenticação. Erro: ', e)         
+            logger.error('Falha na autenticação. Erro: ', e)         
         
         
 
 
     def select_report(self, options):  
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 20)
         
         try:
             old_rel = self.driver.find_element(By.ID, "CPH_ddl_tipos")
@@ -95,7 +100,7 @@ class VerisysSeleniumEngine(BaseAutomationEngine):
             select_data_end.send_keys(generate_formatted_date(range_date[1], '"%d%m%Y"'))     
                             
         except Exception as e:
-            print(f'Erro ao selecionar os campos do relatório. Erro {e}',)           
+            logger.error(f'Erro ao selecionar os campos do relatório. Erro {e}',)           
 
     def select_groups(self, group_dac):
         wait = WebDriverWait(self.driver, 20)   
@@ -111,7 +116,7 @@ class VerisysSeleniumEngine(BaseAutomationEngine):
             wait.until(EC.staleness_of(group))
 
         except Exception as e:
-            print(f'Erro ao selecionar o Grupo Dac do relatório. Erro {e}',)
+            logger.exception(f'Erro ao selecionar o Grupo Dac do relatório. Erro {e}',)
 
 
     def select_options_report(self, list_options):
@@ -139,24 +144,29 @@ class VerisysSeleniumEngine(BaseAutomationEngine):
             export_button.click()
         
         except Exception as e:
-            print(f'Erro ao selecionar as colunas do relatório. Erro {e}',)
+            logger.exception(f'Erro ao selecionar as colunas do relatório. Erro {e}',)
 
 
 
     def run_report(self, config): 
-            self.get_driver()
+            driver = self.get_driver()
+            if not driver:
+                logger.error("[ERROR] Não foi possível iniciar o driver. Abortando.")
+                return False
             try:      
                 self.authentication() 
                 self.select_report(config["report_selection"])
                 self.select_groups(config["groups_dac"])
                 self.select_options_report(config['columns'])
+                logger.info('Automação Selenium executada com sucesso')
                 return True
             except Exception as e:
-                print(f"[ERROR] run_report falhou: {e}")
+                logger.exception(f"[ERROR] run_report falhou: {e}")
                 return False
             
     def close(self,):
         if self.driver:            
             self.driver.quit()
+            logger.info('Driver finalizado!')
                 
 

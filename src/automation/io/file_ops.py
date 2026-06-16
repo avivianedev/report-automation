@@ -5,8 +5,11 @@ import shutil
 import time
 
 from src.automation.utils.dates import generate_formatted_date
+from src.automation.utils.logger import get_logger
 
 sys.path.append(str(Path(__file__).resolve().parents[2])) 
+
+logger = get_logger('files')
 
 
 def move_file(src, dst):    
@@ -17,14 +20,14 @@ def move_file(src, dst):
     
     if os.path.exists(DEST_PATH):
             os.remove(DEST_PATH)
-            print('Arquivo removido.')
+            logger.info('Arquivo removido.')
     try:              
         time.sleep(5)
         shutil.move(DOWNLOAD_PATH, DEST_PATH)
-        print(f"Arquivo movido para: {DEST_PATH}")
+        logger.info(f"Arquivo movido para: {DEST_PATH}")
 
     except Exception as e:
-        print(f'Falha na movimentação dos arquivos. Erro: {e}')
+        logger.exception(f'Falha na movimentação dos arquivos. Erro: {e}')
     
 
 
